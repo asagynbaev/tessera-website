@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#EEF0EA"/>
+  <g stroke="#D5DAE3" stroke-width="1">
+    <path d="M0 16H64M0 32H64M0 48H64M16 0V64M32 0V64M48 0V64"/>
+  </g>
+  <!-- a tessera, drawn as a blueprint node -->
+  <rect x="17.5" y="17.5" width="29" height="29" fill="#EEF0EA" stroke="#28489E" stroke-width="3"/>
+  <rect x="25" y="25" width="14" height="14" fill="#28489E"/>
+</svg>

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tessera — prove facts, not data. Privacy-preserving identity for .NET</title>
+  <meta name="description" content="Tessera lets your .NET app verify users are KYC'd, accredited, in-jurisdiction, or human — without storing their data. Privacy-preserving identity & reputation: DIDs, selective disclosure over Merkle bundles, Bulletproof predicate proofs, anchored to Solana, EVM, or Cardano.">
+  <meta property="og:title" content="Tessera — prove facts, not data.">
+  <meta property="og:description" content="Privacy-preserving identity and reputation infrastructure for .NET. A verifier learns “income ≥ 50,000: true” — and nothing else.">
+  <meta property="og:type" content="website">
+  <!-- After deploying, replace with the ABSOLUTE URL of assets/og.png — crawlers ignore relative og:image paths. -->
+  <meta property="og:image" content="assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0E1C19">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/plex-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <noscript>
+    <style>
+      .tab-panel[hidden] { display: block !important; }
+      .tab-rail, .copy-btn { display: none !important; }
+      .flow-step-group { opacity: 1 !important; }
+      .flow-schematic .wire { stroke-dashoffset: 0 !important; }
+      .flow-legend { position: static !important; width: auto !important; height: auto !important; clip: auto !important; }
+    </style>
+  </noscript>
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-head">
+    <a class="wordmark" href="#top" aria-label="Tessera — top of page">
+      <span class="wordmark-tile" aria-hidden="true"></span>Tessera
+    </a>
+    <nav aria-label="External links">
+      <a href="https://github.com/asagynbaev/Tessera">GitHub</a>
+      <a href="https://www.nuget.org/packages/Sagynbaev.Tessera">NuGet</a>
+      <a href="https://github.com/asagynbaev/Tessera/blob/main/docs/architecture.md">architecture.md</a>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="kicker"><span class="tessera-mark" aria-hidden="true"></span>privacy-preserving identity &amp; reputation · a .NET SDK</p>
+        <h1 id="hero-title">Prove facts,<br>not data.</h1>
+        <p class="hero-sub">Let your users prove they're KYC'd, accredited, in-jurisdiction — or simply
+        human — without handing your app a single byte of their data. You stay compliant; they stay
+        private. One SDK, anchored to Solana, EVM, or Cardano through the same interface.</p>
+
+        <div class="install" role="group" aria-label="Install command">
+          <code id="install-cmd">dotnet add package Sagynbaev.Tessera.Sdk</code>
+          <button class="copy-btn" type="button" data-copy="dotnet add package Sagynbaev.Tessera.Sdk" aria-label="Copy install command">copy</button>
+        </div>
+        <p class="install-note">Package IDs ship under the <code>Sagynbaev.</code> prefix on nuget.org — namespaces stay <code>Tessera.*</code>.</p>
+
+        <p class="hero-links">
+          <a href="https://github.com/asagynbaev/Tessera">GitHub repo</a>
+          <a href="https://www.nuget.org/packages/Sagynbaev.Tessera">NuGet</a>
+          <a href="https://github.com/asagynbaev/Tessera/blob/main/docs/architecture.md">Architecture</a>
+        </p>
+      </div>
+
+      <!-- Signature element: the protocol schematic.
+           A Merkle attestation tree that draws itself and computes its REAL root
+           in the browser (same SHA-256 scheme as Tessera.Attestations.MerkleTree).
+           The SVG is built by main.js; static fallback in <noscript> below. -->
+      <figure class="schematic-wrap" aria-labelledby="sch-caption">
+        <svg class="schematic" id="schematic" viewBox="0 0 460 372"
+             aria-label="Merkle attestation tree of 8 sample attestations. Activate a leaf to disclose one fact; the others stay sealed hashes."></svg>
+        <noscript><p class="sch-note">The hero builds a live Merkle tree over 8 sample attestations
+          (human_verified, phone_verified, wallet_verified, kyc_verified, jurisdiction, reputation_score,
+          agent_identity, accredited) and computes its real root — enable JavaScript to watch it draw.</p></noscript>
+        <div class="schematic-titleblock" aria-hidden="true">
+          <span>tessera</span>
+          <span>merkle attestation tree · 8 leaves</span>
+          <span>root&nbsp;<b id="root-hex">—</b></span>
+        </div>
+        <p class="sch-caption mono" id="sch-caption"><span class="cap-dim">activate a leaf — the other attestations stay sealed</span></p>
+        <output id="sch-sr" class="visually-hidden"></output>
+        <p class="sch-note">Built and hashed live in your browser: leaves <code>SHA-256(0x00&#8202;‖&#8202;fact)</code>,
+        nodes <code>SHA-256(0x01&#8202;‖&#8202;L&#8202;‖&#8202;R)</code> — the same scheme as
+        <code>Tessera.Attestations.MerkleTree</code>. Recompute it: run <code>tessera.verifyRoot()</code>
+        in the console. Facts are sample data; the tree is real.</p>
+      </figure>
+    </section>
+
+    <!-- ================= WHAT YOU CAN BUILD ================= -->
+    <section class="build" aria-labelledby="build-title">
+      <p class="kicker"><span class="tessera-mark" aria-hidden="true"></span>use cases · where it fits</p>
+      <h2 id="build-title" class="display">One identity layer.<br>RWA, DeFi, DAOs, and more.</h2>
+      <p class="section-lede">Three moves — disclose one fact, prove a predicate without revealing the
+        value, anchor a root on-chain — compose into products across very different domains. A map, by
+        domain, of what teams build on it.</p>
+      <p class="use-legend mono"><span class="t-ex">▣ runnable example in the repo</span><span class="t-pat">○ application pattern</span></p>
+
+      <div class="use-group">
+        <h3 class="use-group-title mono">RWA &amp; regulated assets</h3>
+        <div class="use-grid">
+          <article class="use-tile">
+            <span class="use-tag ex" aria-hidden="true">▣ example</span>
+            <h4 class="build-name">Tokenized securities &amp; RWA</h4>
+            <p>Gate every transfer on identity — holders prove <code>kyc_verified</code> + a permitted
+              <code>jurisdiction</code> — while the registry stays off-chain and no PII ever touches the chain.</p>
+            <p class="build-meta">selective disclosure + allowlist · PermissionedToken (ERC-3643 / T-REX)</p>
+          </article>
+          <article class="use-tile">
+            <span class="use-tag ex" aria-hidden="true">▣ example</span>
+            <h4 class="build-name">Private placements &amp; accredited sales</h4>
+            <p>Let only accredited buyers in: the holder proves <code>income ≥ $X</code> with a Bulletproof
+              bound to the issuer's commitment, and the value itself is never disclosed.</p>
+            <p class="build-meta">bound predicate proof · CardanoCreditLine</p>
+          </article>
+          <article class="use-tile">
+            <span class="use-tag pat" aria-hidden="true">○ pattern</span>
+            <h4 class="build-name">Transfer-agent compliance</h4>
+            <p>Revoke a holder's attestation and the on-chain allowlist drops them at the next revocation
+              epoch — pending transfers simply stop, with the decision made off-chain.</p>
+            <p class="build-meta">allowlist gateway + revocation epoch</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="use-group">
+        <h3 class="use-group-title mono">DeFi</h3>
+        <div class="use-grid">
+          <article class="use-tile">
+            <span class="use-tag ex" aria-hidden="true">▣ example</span>
+            <h4 class="build-name">Reputation &amp; undercollateralized lending</h4>
+            <p>Extend a credit line against <code>income ≥ X</code> or <code>reputation ≥ N</code> without
+              doxxing the figure; your contract reads only <span class="build-out">approved</span>.</p>
+            <p class="build-meta">range proof · CardanoCreditLine</p>
+          </article>
+          <article class="use-tile">
+            <span class="use-tag pat" aria-hidden="true">○ pattern</span>
+            <h4 class="build-name">Compliant pools &amp; perps</h4>
+            <p>Restrict LPing or trading to verified, in-jurisdiction wallets, with eligibility enforced at
+              the contract via the same allowlist gateway that drives permissioned tokens.</p>
+            <p class="build-meta">verification policy + allowlist</p>
+          </article>
+          <article class="use-tile">
+            <span class="use-tag ex" aria-hidden="true">▣ example</span>
+            <h4 class="build-name">Confidential transfers</h4>
+            <p>Move value without publishing the amount: a Pedersen-committed amount carries two range
+              proofs — <code>amount ≥ 0</code> and <code>balance − amount ≥ 0</code>.</p>
+            <p class="build-meta">Pedersen + Bulletproofs · ConfidentialTransfer</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="use-group">
+        <h3 class="use-group-title mono">Governance, DAOs &amp; airdrops</h3>
+        <div class="use-grid">
+          <article class="use-tile">
+            <span class="use-tag ex" aria-hidden="true">▣ example</span>
+            <h4 class="build-name">Sybil-resistant voting</h4>
+            <p>One human, one DID. Each ballot is a commitment to <code>0</code> or <code>1</code> with a
+              validity proof, so individual votes stay private while the tally stays sound.</p>
+            <p class="build-meta">commitment + validity proof · PrivateVoting</p>
+          </article>
+          <article class="use-tile">
+            <span class="use-tag pat" aria-hidden="true">○ pattern</span>
+            <h4 class="build-name">Proof-of-humanity airdrops</h4>
+            <p>Filter bots from a drop using a <code>human_verified</code> attestation — without ever linking
+              the claiming wallet to a real-world identity.</p>
+            <p class="build-meta">human_verified + selective disclosure</p>
+          </article>
+          <article class="use-tile">
+            <span class="use-tag ex" aria-hidden="true">▣ example</span>
+            <h4 class="build-name">Reusable KYC / soulbound credentials</h4>
+            <p>KYC once through a source plugin, then present the result anywhere — no document re-upload,
+              and the verifier learns only the predicate it asked for.</p>
+            <p class="build-meta">Sources.Sumsub / Sources.XRoad</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="use-group">
+        <h3 class="use-group-title mono">Markets &amp; AI agents</h3>
+        <div class="use-grid">
+          <article class="use-tile">
+            <span class="use-tag ex" aria-hidden="true">▣ example</span>
+            <h4 class="build-name">Sealed-bid auctions</h4>
+            <p>Bids commit inside <code>[min, max]</code> and reveal only after close, so no one can read or
+              front-run a bid — and no one can change theirs once committed.</p>
+            <p class="build-meta">range proof + commitment · SealedBidAuction</p>
+          </article>
+          <article class="use-tile">
+            <span class="use-tag pat" aria-hidden="true">○ pattern</span>
+            <h4 class="build-name">Eligibility-gated prediction markets</h4>
+            <p>Admit only eligible participants — by <code>jurisdiction</code> or age — proven as a predicate,
+              so a location or birthdate is never shared with the market.</p>
+            <p class="build-meta">jurisdiction predicate</p>
+          </article>
+          <article class="use-tile">
+            <span class="use-tag pat" aria-hidden="true">○ pattern</span>
+            <h4 class="build-name">AI-agent identity &amp; delegation</h4>
+            <p>Issue <code>agent_identity</code> attestations so a dapp can tell an authorized, accountable
+              agent from an anonymous bot — and bound proofs scope what each agent may do.</p>
+            <p class="build-meta">agent_identity + bound proofs</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PRIMITIVES ================= -->
+    <section class="primitives" aria-labelledby="primitives-title">
+      <p class="kicker"><span class="tessera-mark" aria-hidden="true"></span>under the hood — three primitives</p>
+      <h2 id="primitives-title" class="display">One human, one DID.<br>Many facts, disclosed one at a time.</h2>
+
+      <dl class="spec-list">
+        <div class="spec-entry">
+          <dt>
+            <span class="spec-name">DIDs &amp; signed attestations</span>
+            <code class="spec-formula">did:tessera:base58(sha256(pubkey&#8202;‖&#8202;"v1"))</code>
+          </dt>
+          <dd>Identifiers are derived from the controller key, never chosen — squatting is impossible and
+          identity is tied to provable key control. Issuers sign typed, expiring attestation envelopes
+          against the DID: humanity, phone, wallet control, KYC, jurisdiction, reputation.</dd>
+        </div>
+
+        <div class="spec-entry">
+          <dt>
+            <span class="spec-name">Selective disclosure — Merkle bundles</span>
+            <code class="spec-formula">leaf = SHA-256(0x00&#8202;‖&#8202;data) &nbsp;·&nbsp; node = SHA-256(0x01&#8202;‖&#8202;L&#8202;‖&#8202;R)</code>
+          </dt>
+          <dd>A holder's attestations form a domain-separated SHA-256 Merkle tree; only the 32-byte root is
+          anchored on-chain. A presentation reveals one leaf plus its inclusion path, bound to
+          <code>{verifier, session_nonce, as_of_epoch, chain}</code> — the verifier checks it against the
+          anchored root and learns nothing about the other leaves.</dd>
+        </div>
+
+        <div class="spec-entry">
+          <dt>
+            <span class="spec-name">Predicate proofs — Bulletproofs over Pedersen commitments</span>
+            <code class="spec-formula">C = v·G + r·H &nbsp;·&nbsp; proof commitment V = C − threshold·G</code>
+          </dt>
+          <dd>The issuer commits to a value inside the attestation; the holder proves
+          <code>v ≥ threshold</code> without revealing <code>v</code>. The proof is bound to that exact
+          commitment so it cannot be replayed against a different value — and ranges are two-sided:
+          <code>C − min·G</code> and <code>max·G − C</code> are both proved non-negative. Pure C# secp256k1,
+          no external dependencies.</dd>
+        </div>
+      </dl>
+
+      <p class="audit-note"><strong>Audit status, up front:</strong> <code>Tessera.Cryptography</code> is a
+      from-scratch, not-constant-time implementation pending external review — the threat model and known
+      limitations are documented in
+      <a href="https://github.com/asagynbaev/Tessera/blob/main/docs/security-audit-readiness.md">docs/security-audit-readiness.md</a>.</p>
+    </section>
+
+    <!-- ================= PROOF DEMO ================= -->
+    <section class="demo" aria-labelledby="demo-title">
+      <p class="kicker"><span class="tessera-mark" aria-hidden="true"></span>try it — the credit-gating flow</p>
+      <h2 id="demo-title" class="display">What the verifier learns</h2>
+      <p class="section-lede">This is the <code>CardanoCreditLine</code> example, simulated in your browser.
+      Set an income as the holder; set the approval threshold as the lender. The committed value never
+      crosses the wire — only the verdict does.</p>
+
+      <div class="demo-grid">
+        <div class="demo-panel" aria-labelledby="holder-h">
+          <h3 id="holder-h" class="panel-title">holder</h3>
+          <label class="demo-label" for="income">annual income (kept by the holder)</label>
+          <input type="range" id="income" min="10000" max="200000" step="5000" value="85000"
+                 aria-describedby="income-out">
+          <output id="income-out" class="mono demo-value" for="income">85,000</output>
+          <p class="demo-label">what leaves the holder — a Pedersen commitment</p>
+          <p class="commitment mono" id="commitment" aria-live="off">02&#8202;····</p>
+          <p class="demo-fine">fresh blinding <code>r</code> per commitment — bytes are non-reproducible by
+          design; verification is deterministic.</p>
+        </div>
+
+        <div class="demo-panel" aria-labelledby="verifier-h">
+          <h3 id="verifier-h" class="panel-title">verifier</h3>
+          <label class="demo-label" for="threshold">policy: require income ≥</label>
+          <div class="threshold-row">
+            <input type="number" id="threshold" min="10000" max="200000" step="10000" value="50000">
+            <button type="button" class="check-btn" id="check-btn">verify proof</button>
+          </div>
+          <p class="demo-label">verifier receives</p>
+          <p class="received mono">commitment <code>C</code> + Bulletproof for <code>C − threshold·G ≥ 0</code></p>
+          <p class="demo-fine">the verifier recomputes <code>C − threshold·G</code> and checks the proof —
+          it never sees the value.</p>
+        </div>
+      </div>
+
+      <!-- the verdict is an engineering approval stamp: PENDING → APPROVED / DECLINED -->
+      <div class="verdict" id="verdict" data-state="idle">
+        <span class="stamp" aria-hidden="true"></span>
+        <output class="verdict-line" id="verdict-line">
+          press <em>verify proof</em> — the lender checks the bound proof against the commitment
+        </output>
+      </div>
+
+      <p class="demo-disclaimer">Visual demo — the bytes above are simulated. Real proofs run via
+      <code>Tessera.Attestations.CredentialProof.ProveBoundMinimum</code> / <code>VerifyBound</code>,
+      with the Bulletproofs math in <code>Tessera.Cryptography</code> (see the code below, verbatim
+      from the README).</p>
+      <noscript><p class="demo-disclaimer">The interactive demo requires JavaScript — the code below
+      shows the real API instead.</p></noscript>
+    </section>
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <section class="flow" aria-labelledby="flow-title">
+      <p class="kicker"><span class="tessera-mark" aria-hidden="true"></span>how it works</p>
+      <h2 id="flow-title" class="display">Three parties. The chain is a notary.</h2>
+
+      <figure class="flow-schematic" id="flow-schematic">
+        <svg viewBox="0 0 920 300" aria-hidden="true">
+          <defs>
+            <marker id="ar" markerWidth="8" markerHeight="8" refX="6.5" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 z" fill="#28489E"></path>
+            </marker>
+          </defs>
+
+          <!-- wires (draw on scroll) -->
+          <path class="wire" pathLength="1" style="--d:340ms" d="M260 88 L336 88" marker-end="url(#ar)"></path>
+          <path class="wire" pathLength="1" style="--d:760ms" d="M584 88 L656 88" marker-end="url(#ar)"></path>
+          <path class="wire" pathLength="1" style="--d:560ms" d="M460 140 L460 206" marker-end="url(#ar)"></path>
+          <path class="wire" pathLength="1" style="--d:980ms" d="M580 245 L800 245 L800 122 L896 122" marker-end="url(#ar)"></path>
+
+          <!-- payload tags -->
+          <text class="flow-payload" x="300" y="80" text-anchor="middle">attestation</text>
+          <text class="flow-payload" x="620" y="80" text-anchor="middle">presentation</text>
+          <text class="flow-payload" x="472" y="180">anchor root ↓</text>
+          <text class="flow-payload" x="612" y="238">read root + epoch</text>
+
+          <!-- issuer -->
+          <g class="flow-step-group" style="--d:0ms">
+            <rect class="flow-node-box" x="20" y="30" width="240" height="110"></rect>
+            <text class="flow-role" x="40" y="60">issuer</text>
+            <text class="flow-desc" x="40" y="84">signs a typed, expiring</text>
+            <text class="flow-desc" x="40" y="100">attestation for the DID</text>
+            <text class="flow-payload" x="40" y="124">registered · revocable</text>
+          </g>
+
+          <!-- holder -->
+          <g class="flow-step-group" style="--d:420ms">
+            <rect class="flow-node-box" x="340" y="30" width="240" height="110"></rect>
+            <text class="flow-role" x="360" y="60">holder</text>
+            <text class="flow-desc" x="360" y="84">builds the Merkle bundle,</text>
+            <text class="flow-desc" x="360" y="100">anchors the 32-byte root</text>
+            <text class="flow-payload" x="360" y="124">discloses one leaf</text>
+          </g>
+
+          <!-- verifier -->
+          <g class="flow-step-group" style="--d:840ms">
+            <rect class="flow-node-box" x="660" y="30" width="240" height="110"></rect>
+            <text class="flow-role" x="680" y="60">verifier</text>
+            <text class="flow-desc" x="680" y="84">checks sig, path, proof,</text>
+            <text class="flow-desc" x="680" y="100">epoch — all off-chain, C#</text>
+            <text class="flow-payload" x="680" y="124">valid: true / reason</text>
+          </g>
+
+          <!-- notary -->
+          <g class="flow-step-group" style="--d:1120ms">
+            <rect class="flow-notary-box" x="340" y="206" width="240" height="74"></rect>
+            <text class="flow-notary-label" x="360" y="232" font-weight="500">IdentityRegistry · on-chain</text>
+            <text class="flow-notary-label" x="360" y="252">stores: root (32 B) + epoch</text>
+            <text class="flow-notary-label" x="360" y="270" fill="#A6362A">verifies: no proofs</text>
+          </g>
+        </svg>
+      </figure>
+
+      <!-- accessible source of truth + detail -->
+      <ol class="flow-legend visually-hidden">
+        <li><strong>Issuer.</strong> Holds a signing key, registered in the on-chain issuer registry; signs a typed, expiring attestation for the subject DID.</li>
+        <li><strong>Holder.</strong> Collects attestations into a Merkle bundle, anchors the 32-byte root on-chain, and builds a presentation — one leaf + inclusion path + predicate proofs, bound to {verifier, session_nonce, as_of_epoch, chain}.</li>
+        <li><strong>Verifier.</strong> Checks the issuer signature, the inclusion path against the anchored root, the predicate proofs against their commitments, and the revocation epoch — all off-chain, in C#.</li>
+        <li><strong>On-chain notary (IdentityRegistry).</strong> Stores only the attestation root (32 B), the revocation epoch (u64), owner, and issuer records. It verifies no proofs and holds no identity data.</li>
+      </ol>
+
+      <p class="flow-quote">“Hard rule: the chain is for <strong>audit</strong>, not for <strong>storage</strong>.”
+        <span class="src">— docs/architecture.md</span></p>
+    </section>
+
+    <!-- ================= START / CTA ================= -->
+    <section class="cta" aria-labelledby="cta-title">
+      <p class="kicker"><span class="tessera-mark" aria-hidden="true"></span>start building</p>
+      <h2 id="cta-title" class="display">One package. The code lives on GitHub.</h2>
+      <p class="section-lede">The SDK exposes <code>Holder</code>, <code>Issuer</code>, and
+        <code>Verifier</code> — the three roles in any attestation flow. Install it, then lift a runnable
+        scenario straight from <code>examples/</code>; the full API and the modular package layout are in the repo.</p>
+
+      <div class="install">
+        <code>dotnet add package Sagynbaev.Tessera.Sdk</code>
+        <button class="copy-btn" type="button" data-copy="dotnet add package Sagynbaev.Tessera.Sdk" aria-label="Copy install command (start building)">copy</button>
+      </div>
+
+      <div class="cta-links">
+        <a class="cta-link" href="https://github.com/asagynbaev/Tessera">
+          <span class="cta-link-name">GitHub</span><span class="cta-link-sub mono">source &amp; full API</span></a>
+        <a class="cta-link" href="https://github.com/asagynbaev/Tessera/tree/main/examples">
+          <span class="cta-link-name">examples/</span><span class="cta-link-sub mono">runnable scenarios</span></a>
+        <a class="cta-link" href="https://www.nuget.org/packages/Sagynbaev.Tessera">
+          <span class="cta-link-name">NuGet</span><span class="cta-link-sub mono">packages · Sagynbaev. prefix</span></a>
+        <a class="cta-link" href="https://github.com/asagynbaev/Tessera/blob/main/docs/architecture.md">
+          <span class="cta-link-name">architecture.md</span><span class="cta-link-sub mono">layering &amp; on/off-chain boundary</span></a>
+      </div>
+    </section>
+
+    <!-- ================= CHAINS ================= -->
+    <section class="chains" aria-labelledby="chains-title">
+      <p class="kicker"><span class="tessera-mark" aria-hidden="true"></span>chains — honest statuses</p>
+      <h2 id="chains-title" class="display">Three live backends. Verify in C#.</h2>
+      <p class="section-lede">The on-chain layer stores <strong>only</strong> Merkle attestation roots and
+      revocation epochs — DID documents, attestations, and proofs are never written on-chain. Three
+      adapters are complete behind one <code>IChainAnchor</code> interface; plug in any network by
+      implementing it.</p>
+
+      <ul class="chain-list">
+        <li class="chain-row">
+          <span class="chain-name">Solana</span>
+          <span class="chain-status status-complete">adapter complete — program pending deployment</span>
+          <span class="chain-detail">Minimal Anchor program, four instructions:
+            <code>register_did</code> · <code>update_root</code> · <code>bump_revocation</code> · <code>register_issuer</code>.
+            <a href="https://github.com/asagynbaev/Tessera/tree/main/chains/solana/programs/identity-registry">chains/solana/programs/identity-registry/</a></span>
+        </li>
+        <li class="chain-row">
+          <span class="chain-name">EVM</span>
+          <span class="chain-status status-complete">adapter complete — contracts + ABI checked in</span>
+          <span class="chain-detail"><code>EvmChainAnchor</code> (Nethereum) drives
+            <code>IdentityRegistry.sol</code> on any EVM network — chainId/RPC/contract are configuration.
+            <a href="https://github.com/asagynbaev/Tessera/tree/main/chains/evm">chains/evm/</a></span>
+        </li>
+        <li class="chain-row">
+          <span class="chain-name">Cardano</span>
+          <span class="chain-status status-complete">adapter complete — live on preprod</span>
+          <span class="chain-detail">Aiken validators (Plutus V3, <code>aiken check</code> green — 18 tests),
+            state-thread token, one UTxO per DID. <code>CardanoChainAnchor</code> (CardanoSharp + Blockfrost)
+            anchors real preprod transactions — see the runnable
+            <a href="https://github.com/asagynbaev/Tessera/tree/main/examples/CardanoCreditLine">CardanoCreditLine</a> demo.</span>
+        </li>
+        <li class="chain-row">
+          <span class="chain-name">Stellar</span>
+          <span class="chain-status status-scaffold">adapter scaffold — Soroban contract pending</span>
+          <span class="chain-detail">
+            <a href="https://github.com/asagynbaev/Tessera/tree/main/chains/stellar/contracts/attestation-verifier">chains/stellar/contracts/attestation-verifier/</a></span>
+        </li>
+      </ul>
+      <p class="chain-note mono">didHash = SHA-256(utf8(did)) — the same identity keys the same record on every backend.</p>
+    </section>
+
+    <!-- ================= ROADMAP ================= -->
+    <section class="roadmap" aria-labelledby="roadmap-title">
+      <p class="kicker"><span class="tessera-mark" aria-hidden="true"></span>roadmap — planned, not shipped</p>
+      <h2 id="roadmap-title" class="display">What comes next</h2>
+      <ul class="roadmap-list">
+        <li><span class="roadmap-tag mono">planned</span><span class="roadmap-body">Cardano mainnet — the preprod path is live today; mainnet is next.</span></li>
+        <li><span class="roadmap-tag mono">planned</span><span class="roadmap-body">External security audit of <code>Tessera.Cryptography</code> —
+          the audit dossier, threat model, and known limitations are already public in
+          <a href="https://github.com/asagynbaev/Tessera/blob/main/docs/security-audit-readiness.md">docs/security-audit-readiness.md</a>.</span></li>
+        <li><span class="roadmap-tag mono">planned</span><span class="roadmap-body">Native Midnight integration — this does not exist today.</span></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-foot">
+    <p class="foot-aside">In Rome, a <em>tessera hospitalis</em> was a token broken in two — host and guest
+    each kept a half, matched years later to prove the pact. Proof of a relationship, never of its contents.</p>
+    <div class="foot-titleblock" aria-hidden="true">
+      <span>project&nbsp;<b>Tessera</b></span>
+      <span>license&nbsp;<b>MIT</b></span>
+      <span>target&nbsp;<b>.NET 8</b></span>
+      <span>chains&nbsp;<b>Solana · EVM · Cardano · Stellar</b></span>
+      <span>sheets&nbsp;<b>09</b></span>
+    </div>
+    <div class="foot-row">
+      <span class="wordmark"><span class="wordmark-tile" aria-hidden="true"></span>Tessera</span>
+      <nav aria-label="Footer links">
+        <a href="https://github.com/asagynbaev/Tessera/blob/main/LICENSE">MIT license</a>
+        <a href="https://github.com/asagynbaev/Tessera">GitHub</a>
+        <a href="https://www.nuget.org/packages/Sagynbaev.Tessera">NuGet</a>
+        <a href="https://github.com/asagynbaev/Tessera/issues">Contact — GitHub Issues</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
