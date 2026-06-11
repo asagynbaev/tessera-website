@@ -84,6 +84,11 @@ p code, dd code, li code, td code, .spec-formula {
   font-size: 0.9em;
   color: var(--blue-deep);
 }
+/* long dotted identifiers (e.g. Tessera.Attestations.CredentialProof…) must be able
+   to break, or a single inline token forces horizontal page overflow on phones */
+p code, dd code, li code, td code, .build-meta, .cta-link-sub, .chain-detail a, .hero-links a {
+  overflow-wrap: anywhere;
+}
 
 :focus-visible {
   outline: 2px solid var(--blue);
