@@ -735,6 +735,16 @@ input[type="number"] {
 .flow-quote strong { color: var(--ink); }
 .flow-quote .src { color: var(--hair); }
 
+/* the legend is the screen-reader source on desktop (SVG is the visual),
+   and becomes the VISIBLE flow on mobile (the wide schematic is hidden). */
+.flow-legend {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
 /* ---------- chains ---------- */
 
 .chain-list { list-style: none; margin-top: 1.8rem; border: var(--rule); border-bottom: 0; }
@@ -832,8 +842,44 @@ input[type="number"] {
   .cta-links { grid-template-columns: minmax(0, 1fr); }
   section { padding-top: 3.5rem; }
   .hero { padding-top: 2.5rem; }
-  .pkg-table { display: block; overflow-x: auto; }
   .site-head nav a, .site-foot nav a, .hero-links a, .chain-detail a { display: inline-block; padding-block: 0.35rem; }
+
+  /* the wide wired schematic is unreadable on a phone — show the text flow instead */
+  .flow-schematic { display: none; }
+  .flow-legend {
+    position: static;
+    width: auto; height: auto;
+    margin: 1.5rem 0 0; padding: 0;
+    overflow: visible; clip: auto; white-space: normal;
+    list-style: none;
+    border: var(--rule); border-bottom: 0;
+    counter-reset: fstep;
+  }
+  .flow-legend li {
+    counter-increment: fstep;
+    position: relative;
+    border-bottom: var(--rule);
+    background: var(--paper-lift);
+    padding: 1rem 1.1rem 1rem 3rem;
+    color: var(--graphite);
+    font-size: 0.93rem;
+  }
+  .flow-legend li::before {
+    content: counter(fstep);
+    position: absolute; left: 0.8rem; top: 1rem;
+    width: 1.5rem; height: 1.5rem;
+    display: grid; place-items: center;
+    font-family: var(--font-mono); font-size: 0.76rem;
+    color: var(--paper-lift); background: var(--blue);
+  }
+  .flow-legend li strong { color: var(--ink); }
+
+  /* keep the hero schematic legible: let its titleblock wrap, enlarge labels */
+  .schematic-titleblock { flex-wrap: wrap; font-size: 0.62rem; }
+  .schematic-titleblock span:last-child { margin-left: 0; }
+  .leaf-hash { font-size: 10.5px; }
+  .leaf-fact { font-size: 10px; }
+  .sch-label { font-size: 10px; }
 }
 
 @media (max-width: 420px) {

@@ -300,10 +300,8 @@
 
       <p class="demo-disclaimer">Visual demo — the bytes above are simulated. Real proofs run via
       <code>Tessera.Attestations.CredentialProof.ProveBoundMinimum</code> / <code>VerifyBound</code>,
-      with the Bulletproofs math in <code>Tessera.Cryptography</code> (see the code below, verbatim
-      from the README).</p>
-      <noscript><p class="demo-disclaimer">The interactive demo requires JavaScript — the code below
-      shows the real API instead.</p></noscript>
+      with the Bulletproofs math in <code>Tessera.Cryptography</code> — see the
+      <a href="https://github.com/asagynbaev/Tessera">SDK on GitHub</a>.</p>
     </section>
 
     <!-- ================= HOW IT WORKS ================= -->
@@ -368,8 +366,8 @@
         </svg>
       </figure>
 
-      <!-- accessible source of truth + detail -->
-      <ol class="flow-legend visually-hidden">
+      <!-- accessible source of truth + detail; also the visible flow on mobile -->
+      <ol class="flow-legend">
         <li><strong>Issuer.</strong> Holds a signing key, registered in the on-chain issuer registry; signs a typed, expiring attestation for the subject DID.</li>
         <li><strong>Holder.</strong> Collects attestations into a Merkle bundle, anchors the 32-byte root on-chain, and builds a presentation — one leaf + inclusion path + predicate proofs, bound to {verifier, session_nonce, as_of_epoch, chain}.</li>
         <li><strong>Verifier.</strong> Checks the issuer signature, the inclusion path against the anchored root, the predicate proofs against their commitments, and the revocation epoch — all off-chain, in C#.</li>
