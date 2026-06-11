@@ -53,6 +53,11 @@ The folder is deploy-ready as-is:
 After deploying, set the `og:image` meta in `index.html` to the **absolute** URL of
 `assets/og.png` on your domain — crawlers do not resolve relative OG paths reliably.
 
+`vercel.json` sets `Cache-Control: must-revalidate` on all paths so a redeploy never serves a
+stale `styles.css`/`main.js` from the browser cache. The `styles.css?v=N` / `main.js?v=N` query
+strings are a second cache-bust — bump `N` whenever you change the CSS or JS. If a returning
+visitor still sees an old layout, it is browser cache: a hard refresh (Ctrl/Cmd+Shift+R) clears it.
+
 ## A note on the hero schematic
 
 The hero Merkle tree is not decoration: the 8 leaf hashes and the root are computed in the browser

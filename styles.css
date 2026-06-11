@@ -57,9 +57,12 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
+  /* hard guard: nothing may ever cause horizontal side-scroll on mobile */
+  overflow-x: hidden;
+  max-width: 100%;
   background-color: var(--paper);
   /* faint blueprint construction grid */
   background-image:
